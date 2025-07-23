@@ -1,0 +1,1 @@
+export const check_circle = <i class="bi bi-check-circle-fill"></i>
