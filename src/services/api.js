@@ -1,19 +1,22 @@
 export const URL_BASE = "https://api.schneck.dlab.software/api";
 const token = localStorage.getItem('token');
 
-export async function getAllUsers() {
+export async function getAllUsers(searchTerm, filters, signal) {
+    const query = buildQuery(searchTerm, filters);
+
     try {
-        const response = await fetch(`${URL_BASE}/users`, {
+        const response = await fetch(`${URL_BASE}/users/${query}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`
-            }
+            },
+            signal: signal
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(`Error al obtener usuarios: ${errorData.status}`)
+            throw new Error(`Error al obtener usuarios: ${errorData.detail || response.status}`);
         }
 
         return await response.json();
@@ -48,14 +51,26 @@ export async function getAllReceipts() {
     }
 }
 
+/* 
+{nationality: "Alemán"},
+{paymentType: "Jornalero"},
+{role: "Supervisor"},
+{position: "FullStack"},
+{paymentType: "Todos"},
+
+target: nationality=Alem%C3%A1n&paymentType=Jornalero&role=Supervisor&position=FullStack&paymentType=Todos
+*/
+
 // construir query
-const buildQuery = (searchTerm, filters) => {
+export function buildQuery(searchTerm, filtersArr) {
+    const query = [];
+
     if (searchTerm) {
         query.push(`search=${encodeURIComponent(searchTerm)}`);
     }
 
-    for (const [key, value] of Object.entries(filters)) {
-        if (value && value !== 'Todos') {
+    for (const filterObj of filtersArr) {
+        for (const [key, value] of Object.entries(filterObj)) {
             query.push(`${key}=${encodeURIComponent(value)}`);
         }
     }
@@ -64,26 +79,8 @@ const buildQuery = (searchTerm, filters) => {
 }
 
 // test function
-export async function getUsers(searchTerm, filters, signal) {
-    const query = buildQuery(searchTerm, filters);
 
-    try {
-        const response = await fetch(`${URL_BASE}/users${query}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`
-            },
-            signal: signal
-        });
 
-        const data = await response.json();
-        return data;
-
-    } catch (error) {
-        console.error('Error obtieniendo ', error);
-    }
-}
 
 
 

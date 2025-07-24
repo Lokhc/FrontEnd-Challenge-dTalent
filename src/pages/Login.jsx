@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleLogin } from "../services/api";
+import Spinner from "../components/Spinner";
 
 export default function Login() {
 
@@ -23,7 +24,7 @@ export default function Login() {
             if (response.ok) {
                 const { token } = response.body;
                 localStorage.setItem('token', token);
-                navigate('/home');
+                navigate('/dashboard');
             } else {
                 console.log('ndoikoi');
                 setError(true);
@@ -78,7 +79,7 @@ export default function Login() {
                     <span style={{ display: error ? 'block' : 'none' }}>el usuario o la contraseña son incorrectas</span>
                     <br />
 
-                    <button type="submit">{loading ? 'loading...' : 'INICIAR SESIÓN'} </button>
+                    <button type="submit">{loading ? <Spinner /> : 'INICIAR SESIÓN'} </button>
                 </form>
 
                 <a href="">¿Olvidaste tu contraseña?</a>

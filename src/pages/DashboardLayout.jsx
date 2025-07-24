@@ -1,12 +1,11 @@
 import Sidebar from "../components/Sidebar";
-import Content from "./Content";
+import { Outlet } from "react-router-dom";
 
-export default function Home() {
-
+export default function DashboardLayout() {
     return (
         <>
             <Sidebar />
-            <Content />
+            <Outlet />
         </>
     );
 }

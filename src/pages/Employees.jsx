@@ -5,42 +5,55 @@ import Spinner from "../components/Spinner";
 import TablePanel from "../components/TablePanel";
 import NotFound from "../components/NotFound";
 
-import { getAllUsers, getUsers, URL_BASE } from "../services/api";
+import { getAllUsers, getUsers, buildQuery } from "../services/api";
 
 export default function Employees() {
     const [users, setUsers] = useState([]);
     const [isLoading, setLoading] = useState(false);
 
-    // estados prop para componente TablePanel
     const [selectedOrder, setSelectedOrder] = useState(() => localStorage.getItem('selected_order') || '');
     const [selectedFilter, setSelectedFilter] = useState(() => localStorage.getItem('selected_fitler') || '');
-
     const [selectedSubFilters, setSelectedSubFilters] = useState({});
-    const [searchTerm, setSearchTerm] = useState('');
 
-    // setup para labels de opciones y de estilos para menu contextual definidos en TablePanel
+    const [routeParams, setRouteParams] = useState([]);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [queryData, setQueryData] = useState([]);
+
+    /* 
+    * tablepanel_dataset:
+    * Contiene configuracion incial de labels utilizados para los drowpdownMenus en TablePanel
+    * Puede incluir configuracion de estilos
+    */
+
     const tablepanel_dataset = {
-        order: ['Número', 'Más recientes', 'Más antiguos', 'Nombre', 'Apellido', 'Correo electrónico'],
-        filter: [
+        orderSet: [
+            { label: 'Número', value: 'number' },
+            { label: 'Más recientes', value: 'mostRecent' },
+            { label: 'Más antiguos', value: 'oldest' },
+            { label: 'Nombre', value: 'firstName' },
+            { label: 'Apellido', value: 'lastName' },
+            { label: 'Correo electrónico', value: 'email' },
+        ],
+
+        filterSet: [
             { label: 'Tipo de remuneración', value: 'paymentType' },
             { label: 'Cargo', value: 'position' },
             { label: 'Sector', value: 'sector' },
-            { label: 'Turno', value: 'workshift' },
+            { label: 'Turno', value: 'workShift' },
             { label: 'Activo', value: 'active' },
             { label: 'Nacionalidad', value: 'nationality' },
             { label: 'Rol', value: 'role' },
         ],
 
-        // paymentType + Jornalero 
-
-        subFilters: {
-            paymentType: { title: 'Tipo de remuneración', options: ['Todos', 'Jornalero'] },
-            position: { title: 'Cargo', options: ['Todos', 'Frontend', 'Backend', 'FullStack'] },
-            sector: { title: 'Sector', options: ['Todos', 'Dev', 'Remover filtro'] },
-            shift: { title: 'Turno', options: ['Todos', '8-16'] },
-            active: { title: 'Activo', options: ['Todos', 'Activo', 'Inactivo'] },
-            nationality: { title: 'Nacionalidad', options: ['Todos', 'Alemán', 'Remover filtro'] },
-            role: { title: 'Rol', options: ['Funcionario', 'Supervisor'] },
+        subFilterSet: {
+            paymentType: ['Todos', 'Jornalero'],
+            position: ['Todos', 'Frontend', 'Backend', 'FullStack'],
+            workShift: ['Todos', '8-16'],
+            active: ['Todos', 'Activo', 'Inactivo'],
+            sector: ['Todos', 'Dev'],
+            nationality: ['Todos', 'Alemán'],
+            role: ['Funcionario', 'Supervisor']
         }
     };
 
@@ -61,13 +74,13 @@ export default function Employees() {
                 console.log(res);
             })
             .catch(err => console.error(err))
-            .finally(() => console.log(finalizado));
+            .finally(() => console.log('finalizado'));
     }
 
     // llamadas a API
     useEffect(() => {
         /* fetchAllUsers(); */
-        fetchUsersParams();
+        /* fetchUsersParams(); */
     }, []);
 
     // persistencia de estados durante re-renderizado
@@ -77,7 +90,7 @@ export default function Employees() {
     }, [selectedOrder, selectedFilter]);
 
     // funcion de ordenamiento para la tabla
-    const sortTable = (tableData, sortBy) => {
+    const sortTable = (users, sortBy) => {
         const table = [...tableData].sort((a, b) => {
             if (a[sortBy] > b[sortBy]) {
                 return 1;
@@ -99,7 +112,10 @@ export default function Employees() {
                         <span>1</span>
                     </div>
                     <div>
-                        <button onClick={() => sortTable(users, "number")}>IMPORTAR</button>
+                        <button onClick={() => {
+                            let testQuery = buildQuery(searchTerm, queryData);
+                            console.log(testQuery);
+                        }}>IMPORTAR</button>
                         <button><i className="bi bi-plus-lg"></i> NUEVO EMPLEADO</button>
                     </div>
                 </div>
@@ -112,11 +128,13 @@ export default function Employees() {
                     setSelectedOrder={setSelectedOrder}
                     selectedOrder={selectedOrder}
                     setSelectedFilter={setSelectedFilter}
+                    selectedFilter={selectedFilter}
                     setSelectedSubFilter={setSelectedSubFilters}
                     selectedSubFilter={selectedSubFilters}
-
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
+                    setRouteParams={setRouteParams}
+                    routeParams={routeParams}
                 />
 
                 <table>
@@ -155,8 +173,6 @@ export default function Employees() {
                 </table>
 
                 <Pagination />
-
-
 
                 {/* <NotFound /> */}
 

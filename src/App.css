@@ -199,7 +199,7 @@
 }
 
 #center-content {
-  padding: 0 2rem;
+  padding: 2.5rem 2rem;
 }
 
 #account-panel {
@@ -376,5 +376,21 @@ border-right: 1px solid #033fa175;
 }
 
 .table-control-panel {
-  margin: 2.5rem 0;
+  margin-bottom: 2.5rem;
+}
+
+.notfound-box {
+  padding: 2rem;
+  background: #1b1d1e;
+  border-radius: 3px;
+}
+
+.notfound-box i {
+  color: #f33131;
+  font-size: 3.5em;
+}
+
+.notfound-box h3 {
+  margin: 0;
+  color: #636060;
 }

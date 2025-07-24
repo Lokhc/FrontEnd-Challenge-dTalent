@@ -7,27 +7,34 @@ import DropdownMenu from "./Dropdownmenu"
 export default function TablePanel({
     tablePanelDataset,
     setSelectedOrder, selectedOrder,
-    setSelectedFilter,
+    setSelectedFilter, selectedFilter,
     setSelectedSubFilter, selectedSubFilter,
     setSearchTerm, searchTerm,
+    routeParams, setRouteParams,
     setSearchResults, searchResults,
 }) {
 
-    // almacena los submenus de filtro que deben ser renderizados
+    // almacena y establece los sub-menus de filtro seleccionados por el user, para que puedan ser renderizados
     const [addedFilters, setAddedFilters] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const abortControllerRef = useRef(null);
 
     const handleFilterOnSelect = (filter) => {
         setSelectedFilter(filter);
-        if (!addedFilters.includes(filter)) {
-            setAddedFilters(prev => [...prev, filter]);
+        // si el filtro no fue seleccionado por el user, se procede a almacenar
+        if (!addedFilters.some(obj => obj.value === filter)) {
+            setAddedFilters(prev => [...prev, tablePanelDataset.filterSet.find(obj => obj.value === filter)]);
         }
     }
 
-    const handleSubFilterOnSelect = (filter, value) => {
-        setSelectedSubFilter(prev => ({ ...prev, [filter]: value }));
+    // establece el SUB filtro seleccionado y el 
+    const handleSubFilterOnSelect = (filter, selectedValue) => {
+        setSelectedSubFilter(prev => ({ ...prev, [filter.label]: selectedValue }));
+
+        // se debe verificar duplicados !
+        setRouteParams(prev => ([...prev, { [filter.value]: selectedValue }]));
     }
+
 
     /*
         implementacion de search-as-you-type para realizar busquedas dinamicamente
@@ -81,17 +88,18 @@ export default function TablePanel({
                 <div>
                     <h3>Ordernar Por </h3>
                     <DropdownMenu
-                        dataset={tablePanelDataset.order}
+                        dataset={tablePanelDataset.orderSet}
                         onSelect={setSelectedOrder}
-                        selected={selectedOrder || tablePanelDataset.order[0]}
+                        selected={selectedOrder}
                     />
 
                     {/* <span>Agregar filtro +</span> */}
 
                     <DropdownMenu
-                        dataset={tablePanelDataset.filter}
+                        dataset={tablePanelDataset.filterSet}
                         onSelect={handleFilterOnSelect}
-                        selected="Agregar filtro"
+                        selected={selectedFilter}
+                        title="Agregar filtro:"
                         icon=" +"
                         style={commonStyles.filter_btn}
                     />
@@ -109,20 +117,22 @@ export default function TablePanel({
                 </form>
             </div>
 
-            {/* <div className="filter-panel">
-                {addedFilters.map(item =>
+            <div className="filter-panel">
+                {addedFilters.map(filter =>
                     <DropdownMenu
-                        key={item}
-                        dataset={tablePanelDataset.subFilter[item] || []}
-                        selected={`${item}: ${selectedSubFilter[item]}`}
-                        onSelect={(selectedSub) => handleSubFilterOnSelect(item, selectedSub)}
+                        key={filter.value}
+                        dataset={tablePanelDataset.subFilterSet[filter.value]}
+                        onSelect={(selectedValue) => handleSubFilterOnSelect(filter, selectedValue)}
+                        selected={selectedSubFilter[filter.label]}
+                        title={filter.label}
                         style={commonStyles.dropdown_menu_btn}
                         menuStyle={commonStyles.menu}
                         menuItemStyle={commonStyles.menu_item}
                         icon={<i className="bi bi-chevron-down"></i>}
                     />
                 )}
-            </div> */}
+            </div>
+
         </div>
     )
 }

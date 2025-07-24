@@ -1,15 +1,12 @@
-import { useState } from 'react'
-
-import './App.css'
-import Sidebar from './components/Sidebar'
-import Content from './pages/Content'
-import Home from './pages/Home'
-import Login from './pages/Login'
+import './App.css';
+import React from 'react';
+import { RouterProvider } from 'react-router-dom';
+import router from './router';
 
 function App() {
   return (
-    <Login />
+    <RouterProvider router={router} />
   );
 }
 
-export default App
+export default App;

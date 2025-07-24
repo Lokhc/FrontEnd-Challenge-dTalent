@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import Spinner from "../components/Spinner";
 import TablePanel from "../components/TablePanel";
+import NotFound from "../components/NotFound";
 
 import { getAllReceipts } from "../services/api";
 
@@ -10,96 +11,43 @@ export default function Receipts() {
     const [receipts, setReceipts] = useState([]);
     const [isLoading, setLoading] = useState(false);
 
-    // child components states for TablePanel
-    const [selectedOrderItem, setSelectedOrderItem] = useState(""); // testing unidirectional flow         1
-    const [selectedFilterItem, setSelectedFilterItem] = useState(""); // testing unidirectional flow       2
-    const [selectedFilterOption, setSelectedFilterOption] = useState(""); // testing unidirectional flow   3
+    const [selectedOrder, setSelectedOrder] = useState(() => localStorage.getItem('selected_order') || '');    // storage obsoleto
+    const [selectedFilter, setSelectedFilter] = useState(() => localStorage.getItem('selected_fitler') || '');
+    const [selectedSubFilters, setSelectedSubFilters] = useState({});
 
-    const tablePanelDataset = {
-        orderMenuItems: [
-            { id: 'recent', label: 'Más recientes' },
-            { id: 'older', label: 'Más antiguos' },
-            { id: 'type', label: 'Tipo' },
+    const [routeParams, setRouteParams] = useState([]);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [queryData, setQueryData] = useState([]);
+
+    const [prefilteredReceipts, setPrefilteredRecipts] = useState(null);
+
+    // setup para labels de opciones y de estilos para menu contextual definidos en TablePanel
+    const tablepanel_dataset = {
+        orderSet: [
+            { label: 'Más recientes', value: 'mostRecent' },
+            { label: 'Más antiguos', value: 'oldest' },
+            { label: 'Tipo', value: 'type' },
         ],
 
-        filterMenuItems: [
-            { id: 'remunarationType', label: 'Tipo de reumneracion' },
-            { id: 'sector', label: 'Sector' },
-            { id: 'year', label: 'Año' },
-            { id: 'month', label: 'Mes' },
-            { id: 'sent', label: 'Enviado' },
-            { id: 'read', label: 'Leído' },
+        filterSet: [
+            { label: 'Tipo de remuneración', value: 'paymentType' },
+            { label: 'Sector', value: 'sector' },
+            { label: 'Año', value: 'year' },
+            { label: 'Mes', value: 'month' },
+            { label: 'Enviado', value: 'sended' },
+            { label: 'Leído', value: 'readed' },
         ],
 
-        filterOptions: [
-            { id: 'all', label: 'Todos' },
-            { id: 'yes', label: 'Si' },
-            { id: 'no', label: 'No' }
-        ],
-
-        Año: [
-            { id: "2022", label: "2022" },
-            { id: "2023", label: "2023" },
-            { id: "2024", label: "2024" },
-            { id: "2025", label: "2025" }
-        ],
-
-        Mes: [
-            { id: "jan", label: "Enero" },
-            { id: "feb", label: "Febrero" },
-            { id: "mar", label: "Marzo" },
-            { id: "apr", label: "Abril" },
-            { id: "may", label: "Mayo" },
-            { id: "jun", label: "Junio" },
-            { id: "jul", label: "Julio" },
-            { id: "aug", label: "Agosto" },
-            { id: "sep", label: "Septiembre" },
-            { id: "oct", label: "Octubre" },
-            { id: "nov", label: "Noviembre" },
-            { id: "dec", label: "Diciembre" },
-        ],
-
-        Enviado: [
-            { id: 'all', label: 'Todos' },
-            { id: 'yes', label: 'Si' },
-            { id: 'no', label: 'No' },
-            { id: 'remove', label: 'Remover filtro' },
-        ],
-
-        "Leído": [
-            { id: 'all', label: 'Todos' },
-            { id: 'yes', label: 'Si' },
-            { id: 'no', label: 'No' },
-            { id: 'remove', label: 'Remover filtro' },
-        ],
-
-        styles: {
-            btnStyle: {
-                display: 'inline - block',
-                padding: '0.6em 1.2em',
-                border: 'unset',
-                borderRadius: '25px',
-                background: '#80808021',
-                fontSize: '12px',
-                color: 'cornflowerblue',
-            },
-
-            menuStyle: {
-                padding: '0.5rem',
-            },
-
-            menuItemStyle: {
-                padding: '0.5rem',
-            },
-
-            filterBtnStyle: {
-                color: 'cornflowerblue',
-                fontSize: '12px',
-                paddingLeft: '2rem',
-                cursor: 'pointer',
-            }
+        subFilterSet: {
+            paymentType: ['Todos', 'Jornalero'],
+            sector: ['Todos', 'Dev'],
+            year: ['2023', '2024', '2025'],
+            month: ['Todos', 'Enero', 'Febrero'],
+            sended: ['Todos', 'Sí', 'No'],
+            readed: ['Todos', 'Sí', 'No'],
         }
-    }
+    };
 
     const fetchAllReceipts = () => {
         setLoading(true);
@@ -131,13 +79,17 @@ export default function Receipts() {
 
             <div id="center-content">
                 <TablePanel
-                    tablePanelDataset={tablePanelDataset}
-                    setSelectedOrderItem={setSelectedOrderItem}
-                    selectedOrderItem={selectedOrderItem}
-                    setSelectedFilterItem={setSelectedFilterItem}
-                    selectedFilterItem={selectedFilterItem}
-                    setSelectedFilterOption={setSelectedFilterOption}
-                    selectedFilterOption={selectedFilterOption}
+                    tablePanelDataset={tablepanel_dataset}
+                    setSelectedOrder={setSelectedOrder}
+                    selectedOrder={selectedOrder}
+                    setSelectedFilter={setSelectedFilter}
+                    selectedFilter={selectedFilter}
+                    setSelectedSubFilter={setSelectedSubFilters}
+                    selectedSubFilter={selectedSubFilters}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    setRouteParams={setRouteParams}
+                    routeParams={routeParams}
                 />
 
                 <table>
@@ -157,7 +109,7 @@ export default function Receipts() {
                             <tr><td colSpan="7"><Spinner /></td></tr>
                         ) : (
                             receipts.map(objRes =>
-                                <tr>
+                                <tr key={objRes.id}>
                                     <td>{objRes.type}</td>
                                     <td>{objRes.employeeFullName}</td>
                                     <td>{objRes.month}/{objRes.year}</td>
@@ -170,6 +122,8 @@ export default function Receipts() {
                         )}
                     </tbody>
                 </table>
+
+                {/* <NotFound /> */}
 
                 <Pagination />
             </div>
