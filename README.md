@@ -1,6 +1,6 @@
 # dTalent
 
-Este proyecto es una aplicación web desarrollada como parte de un challenge para dLab. Se definen dos vistas principales: Empleados y Recibos. Los cuales implementan un sistema de inicio de sesión, un panel de control con filtrado dinámico y una tabla para la representacion de datos. Demuestra el uso de JavaScript, React, ReactRouter, Vite, CSS.
+Este proyecto es una aplicación web desarrollada como parte de un challenge para dLab. Se definen 3 vistas principales: Login para inicio de sesión, Empleados y Recibos. Los cuales implementan un panel de control con filtrado dinámico y una tabla para la representacion de datos. Demuestra el uso de JavaScript, React, ReactRouter, Vite, CSS.
 
 ## Aspectos destacados:
 
