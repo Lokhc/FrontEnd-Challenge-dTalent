@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-import DropdownMenu from "./Dropdownmenu"
+import DropdownMenu from "./DropdownMenu"
 
 export default function TablePanel({
     tablePanelDataset,
