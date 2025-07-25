@@ -1,11 +1,11 @@
-export const URL_BASE = "https://api.schneck.dlab.software/api";
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || "https://api.schneck.dlab.software/api";
 const token = localStorage.getItem('token');
 
 export async function getAllUsers(searchTerm, filters, signal) {
     const query = buildQuery(searchTerm, filters);
 
     try {
-        const response = await fetch(`${URL_BASE}/users/?${query}`, {
+        const response = await fetch(`${API_BASE_URL}/users/?${query}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export async function getAllUsers(searchTerm, filters, signal) {
 export async function getAllReceipts(searchTerm, filters, signal) {
     const query = buildQuery(searchTerm, filters)
     try {
-        const response = await fetch(`${URL_BASE}/receipts`, {
+        const response = await fetch(`${API_BASE_URL}/receipts`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -54,7 +54,7 @@ export async function getAllReceipts(searchTerm, filters, signal) {
 
 export async function handleLogin(username, password) {
     try {
-        const response = await fetch(`${URL_BASE}/users/demo_login/`, {
+        const response = await fetch(`${API_BASE_URL}/users/demo_login/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
