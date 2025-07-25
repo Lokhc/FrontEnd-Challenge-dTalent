@@ -105,6 +105,7 @@ export default function TablePanel({
                             type="text"
                             placeholder="Buscar empleados"
                             onChange={handleInputSearchChange}
+                            aria-label="Buscar"
                         />
                         <i className="bi bi-search"></i>
                     </div>

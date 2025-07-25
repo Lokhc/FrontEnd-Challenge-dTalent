@@ -12,7 +12,6 @@ export default function Login() {
 
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [focus, setFocus] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -20,19 +19,19 @@ export default function Login() {
 
         try {
             const response = await handleLogin(username, password);
-
             if (response.ok) {
                 const { token } = response.body;
                 localStorage.setItem('token', token);
                 navigate('/dashboard');
+                setError(false);
             } else {
                 console.log('ndoikoi');
-                setError(true);
-                setLoading(false);
             }
-
         } catch (error) {
-            console.error(error, 'Error login page');
+            console.error('Error al iniciar sesión - Login:', error);
+            setError(true);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -59,6 +58,7 @@ export default function Login() {
                             onChange={usernameInputOnChange}
                             id="username"
                             placeholder="usuario"
+                            aria-label="Nombre de usuario"
                             required
                         />
                     </fieldset>
@@ -73,6 +73,7 @@ export default function Login() {
                             onChange={passwordInputOnChange}
                             id="password"
                             placeholder="contraseña"
+                            aria-label="Contraseña"
                             required
                         />
                     </fieldset>

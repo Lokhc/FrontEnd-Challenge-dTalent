@@ -160,10 +160,19 @@ input {
   outline: none;
   padding: 0.5rem;
   border-radius: 3px;
+  transition: border-color 0.25;
 }
 
 fieldset {
   transition: border-color 0.25s;
+  margin: 0;
+  border: 1px solid #535353;
+  border-radius: 3px;
+  padding: 0 6px;
+}
+
+fieldset:focus-within {
+  border-color: #033fa1;
 }
 
 legend {

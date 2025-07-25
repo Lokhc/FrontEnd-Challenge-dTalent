@@ -69,6 +69,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: border-color 0.25s;
+}
+
+#input-box:focus {
+  border-color: #033fa1;
 }
 
 #input-box i {
@@ -253,13 +258,6 @@
 
 #login-section>div form {
   padding: 2rem 0;
-}
-
-#login-section>div form fieldset {
-  margin: 0;
-  border: 1px solid #535353;
-  border-radius: 3px;
-  padding: 0 6px;
 }
 
 #login-section>div form fieldset legend {

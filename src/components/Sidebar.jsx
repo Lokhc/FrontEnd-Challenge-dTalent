@@ -3,13 +3,6 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 export default function Sidebar() {
-
-    const [selectedItem, setSelectedItem] = useState(null);
-
-    const handleClick = (itemId) => {
-        setSelectedItem(itemId);
-    }
-
     const menuItems = [
         { id: 'employees', label: 'Emepleados', icon: <i className="bi bi-people-fill"></i> },
         { id: 'receipts', label: 'Recibos', icon: <i className="bi bi-receipt"></i> },

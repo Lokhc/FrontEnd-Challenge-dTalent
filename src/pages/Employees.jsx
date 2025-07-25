@@ -11,7 +11,7 @@ export default function Employees() {
     const [users, setUsers] = useState([]);
     const [isLoading, setLoading] = useState(false);
 
-    const [selectedOrder, setSelectedOrder] = useState(() => localStorage.getItem('selected_order') || '');
+    const [selectedOrder, setSelectedOrder] = useState(() => localStorage.getItem('selected_order') || ''); // storage obsoleto
     const [selectedFilter, setSelectedFilter] = useState(() => localStorage.getItem('selected_fitler') || '');
     const [selectedSubFilters, setSelectedSubFilters] = useState({});
 
@@ -117,10 +117,7 @@ export default function Employees() {
                     selectedSubFilter={selectedSubFilters}
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
-                    setRouteParams={(param) => {
-                        setRouteParams(param);
-
-                    }}
+                    setRouteParams={setRouteParams}
                     routeParams={routeParams}
                 />
 

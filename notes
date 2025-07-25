@@ -2,3 +2,4 @@ considerar la posibilidad de implementar:
 administrador de estado
 contextApi
 encriptacion de token
+lift-the-state-up para que los estados persistan al cambiar de vista
