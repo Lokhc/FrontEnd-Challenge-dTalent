@@ -1,7 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 
-import { getUsers } from "../services/api";
-
 import DropdownMenu from "./Dropdownmenu"
 
 export default function TablePanel({
@@ -27,14 +25,11 @@ export default function TablePanel({
         }
     }
 
-    // establece el SUB filtro seleccionado y el 
+    // establece el SUB filtro seleccionado y los asigna al objeto de parametros 
     const handleSubFilterOnSelect = (filter, selectedValue) => {
         setSelectedSubFilter(prev => ({ ...prev, [filter.label]: selectedValue }));
-
-        // se debe verificar duplicados !
-        setRouteParams(prev => ([...prev, { [filter.value]: selectedValue }]));
+        setRouteParams(prev => ({ ...prev, [filter.value]: selectedValue }));
     }
-
 
     /*
         implementacion de search-as-you-type para realizar busquedas dinamicamente

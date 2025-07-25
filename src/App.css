@@ -394,3 +394,7 @@ border-right: 1px solid #033fa175;
   margin: 0;
   color: #636060;
 }
+
+#receipts-tr {
+  cursor: pointer;
+}

@@ -44,8 +44,8 @@ export default function Receipts() {
             sector: ['Todos', 'Dev'],
             year: ['2023', '2024', '2025'],
             month: ['Todos', 'Enero', 'Febrero'],
-            sended: ['Todos', 'Sí', 'No'],
-            readed: ['Todos', 'Sí', 'No'],
+            sended: ['Todos', 'Sí', 'No'], // boolean
+            readed: ['Todos', 'Sí', 'No'], // boolean
         }
     };
 
@@ -57,6 +57,10 @@ export default function Receipts() {
             })
             .catch(err => console.error(err))
             .finally(() => setLoading(false));
+    }
+
+    const handleListItemClick = (listItemData) => {
+        console.log(listItemData);
     }
 
     useEffect(() => {
@@ -109,7 +113,7 @@ export default function Receipts() {
                             <tr><td colSpan="7"><Spinner /></td></tr>
                         ) : (
                             receipts.map(objRes =>
-                                <tr key={objRes.id}>
+                                <tr key={objRes.id} onClick={() => handleListItemClick(objRes)} id="receipts-tr">
                                     <td>{objRes.type}</td>
                                     <td>{objRes.employeeFullName}</td>
                                     <td>{objRes.month}/{objRes.year}</td>
