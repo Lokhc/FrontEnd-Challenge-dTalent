@@ -93,13 +93,13 @@
   border-right: unset;
 }
 
-#dropdown-menu {
+.dropdown-menu {
   display: inline-block;
   position: relative;
   user-select: none;
 }
 
-#dropdown-menu button {
+.dropdown-menu button {
   display: inline-block;
   padding: 0;
   outline: none;
@@ -109,11 +109,11 @@
   font-size: 14px;
 }
 
-#dropdown-menu button i {
+.dropdown-menu button i {
   display: inline-block;
 }
 
-#dropdown-menu ul {
+.dropdown-menu ul {
   width: 8rem;
   position: absolute;
   right: 0;
@@ -124,13 +124,13 @@
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
-#dropdown-menu ul li {
+.dropdown-menu ul li {
   cursor: pointer;
   padding: 0.5rem;
   font-size: 0.9em;
 }
 
-#dropdown-menu ul li:hover {
+.dropdown-menu ul li:hover {
   background: #0340a150;
 }
 

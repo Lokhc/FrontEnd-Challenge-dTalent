@@ -10,12 +10,10 @@ export default function TablePanel({
     setSearchTerm, searchTerm,
     routeParams, setRouteParams,
     setSearchResults, searchResults,
+    addedFilters, setAddedFilters
 }) {
 
-    // almacena y establece los sub-menus de filtro seleccionados por el user, para que puedan ser renderizados
-    const [addedFilters, setAddedFilters] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const abortControllerRef = useRef(null);
 
     const handleFilterOnSelect = (filter) => {
         setSelectedFilter(filter);
@@ -86,6 +84,7 @@ export default function TablePanel({
                         dataset={tablePanelDataset.orderSet}
                         onSelect={setSelectedOrder}
                         selected={selectedOrder}
+                        value={selectedOrder}
                     />
 
                     {/* <span>Agregar filtro +</span> */}
@@ -114,13 +113,19 @@ export default function TablePanel({
             </div>
 
             <div className="filter-panel">
-                {addedFilters.map(filter =>
+                {addedFilters?.map(filter =>
                     <DropdownMenu
                         key={filter.value}
                         dataset={tablePanelDataset.subFilterSet[filter.value]}
                         onSelect={(selectedValue) => handleSubFilterOnSelect(filter, selectedValue)}
+                        title={filter.label + ':'}
                         selected={selectedSubFilter[filter.label]}
-                        title={filter.label}
+                        value={selectedFilter[filter.value]}
+                        /*
+                        title={selectedSubFilter[filter.label]}
+                        selected={filter.label}
+                        value={selectedFilter[filter.value]}
+                        */
                         style={commonStyles.dropdown_menu_btn}
                         menuStyle={commonStyles.menu}
                         menuItemStyle={commonStyles.menu_item}
@@ -128,7 +133,6 @@ export default function TablePanel({
                     />
                 )}
             </div>
-
         </div>
     )
 }

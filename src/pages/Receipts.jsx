@@ -1,28 +1,24 @@
-import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
 import Pagination from "../components/Pagination";
 import Spinner from "../components/Spinner";
 import TablePanel from "../components/TablePanel";
 import NotFound from "../components/NotFound";
 
-import { getAllReceipts } from "../services/api";
-
 export default function Receipts() {
-    const [receipts, setReceipts] = useState([]);
-    const [isLoading, setLoading] = useState(false);
+    const { receipt } = useOutletContext();
+    const {
+        selectedOrder, setSelectedOrder,
+        selectedFilter, setSelectedFilter,
+        selectedSubFilters, setSelectedSubFilters,
+        routeParams, setRouteParams,
+        searchTerm, setSearchTerm,
+        receipts, setReceipts,
+        isLoading, setLoading,
+        displayTable, setDisplayTable,
+        addedFilters, setAddedFilters,
+    } = receipt;
 
-    const [selectedOrder, setSelectedOrder] = useState(() => localStorage.getItem('selected_order') || '');    // storage obsoleto
-    const [selectedFilter, setSelectedFilter] = useState(() => localStorage.getItem('selected_fitler') || '');
-    const [selectedSubFilters, setSelectedSubFilters] = useState({});
-
-    const [routeParams, setRouteParams] = useState([]);
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const [queryData, setQueryData] = useState([]);
-
-    const [prefilteredReceipts, setPrefilteredRecipts] = useState(null);
-
-    // setup para labels de opciones y de estilos para menu contextual definidos en TablePanel
     const tablepanel_dataset = {
         orderSet: [
             { label: 'Más recientes', value: 'mostRecent' },
@@ -49,23 +45,9 @@ export default function Receipts() {
         }
     };
 
-    const fetchAllReceipts = () => {
-        setLoading(true);
-        getAllReceipts()
-            .then(res => {
-                setReceipts(res.results);
-            })
-            .catch(err => console.error(err))
-            .finally(() => setLoading(false));
-    }
-
     const handleListItemClick = (listItemData) => {
         console.log(listItemData);
     }
-
-    useEffect(() => {
-        fetchAllReceipts();
-    }, []);
 
     return (
         <section>
@@ -94,40 +76,46 @@ export default function Receipts() {
                     setSearchTerm={setSearchTerm}
                     setRouteParams={setRouteParams}
                     routeParams={routeParams}
+                    displayTable={displayTable}
+                    setDisplayTable={setDisplayTable}
+                    addedFilters={addedFilters}
+                    setAddedFilters={setAddedFilters}
                 />
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tipo</th>
-                            <th>Empleado</th>
-                            <th>Fecha</th>
-                            <th>Enviado</th>
-                            <th>Leído</th>
-                            <th>Firmado</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {isLoading ? (
-                            <tr><td colSpan="7"><Spinner /></td></tr>
-                        ) : (
-                            receipts.map(objRes =>
-                                <tr key={objRes.id} onClick={() => handleListItemClick(objRes)} id="receipts-tr">
-                                    <td>{objRes.type}</td>
-                                    <td>{objRes.employeeFullName}</td>
-                                    <td>{objRes.month}/{objRes.year}</td>
-                                    <td>{objRes.isSended ? <i className="bi bi-check-circle-fill"></i> : <i className="bi bi-x-circle-fill"></i>}</td>
-                                    <td>{objRes.isReaded ? <i className="bi bi-check-circle-fill"></i> : <i className="bi bi-x-circle-fill"></i>}</td>
-                                    <td>{objRes.isSigned ? <i className="bi bi-check-circle-fill"></i> : <i className="bi bi-x-circle-fill"></i>}</td>
-                                    <td><i className="bi bi-pencil-fill"></i></td>
-                                </tr>
-                            )
-                        )}
-                    </tbody>
-                </table>
-
-                {/* <NotFound /> */}
+                {displayTable ? (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Empleado</th>
+                                <th>Fecha</th>
+                                <th>Enviado</th>
+                                <th>Leído</th>
+                                <th>Firmado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {isLoading ? (
+                                <tr><td colSpan="7"><Spinner /></td></tr>
+                            ) : (
+                                receipts.map(objRes =>
+                                    <tr key={objRes.id} onClick={() => handleListItemClick(objRes)} id="receipts-tr">
+                                        <td>{objRes.type}</td>
+                                        <td>{objRes.employeeFullName}</td>
+                                        <td>{objRes.month}/{objRes.year}</td>
+                                        <td>{objRes.isSended ? <i className="bi bi-check-circle-fill"></i> : <i className="bi bi-x-circle-fill"></i>}</td>
+                                        <td>{objRes.isReaded ? <i className="bi bi-check-circle-fill"></i> : <i className="bi bi-x-circle-fill"></i>}</td>
+                                        <td>{objRes.isSigned ? <i className="bi bi-check-circle-fill"></i> : <i className="bi bi-x-circle-fill"></i>}</td>
+                                        <td><i className="bi bi-pencil-fill"></i></td>
+                                    </tr>
+                                )
+                            )}
+                        </tbody>
+                    </table>
+                ) : (
+                    <NotFound />
+                )}
 
                 <Pagination />
             </div>

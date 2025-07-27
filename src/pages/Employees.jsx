@@ -1,27 +1,25 @@
-import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
 import Pagination from "../components/Pagination";
 import Spinner from "../components/Spinner";
 import TablePanel from "../components/TablePanel";
 import NotFound from "../components/NotFound";
 
-import { getAllUsers } from "../services/api";
-
 export default function Employees() {
-    const [users, setUsers] = useState([]);
-    const [isLoading, setLoading] = useState(false);
+    const { employee } = useOutletContext();
+    const {
+        selectedOrder, setSelectedOrder,
+        selectedFilter, setSelectedFilter,
+        selectedSubFilters, setSelectedSubFilters,
+        routeParams, setRouteParams,
+        searchTerm, setSearchTerm,
+        users, setUsers,
+        isLoading, setLoading,
+        displayTable, setDisplayTable,
+        addedFilters, setAddedFilters
+    } = employee;
 
-    const [selectedOrder, setSelectedOrder] = useState(() => localStorage.getItem('selected_order') || ''); // storage obsoleto
-    const [selectedFilter, setSelectedFilter] = useState(() => localStorage.getItem('selected_fitler') || '');
-    const [selectedSubFilters, setSelectedSubFilters] = useState({});
-
-    // parametros de ruta
-    const [routeParams, setRouteParams] = useState({});
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const [displayTable, setDisplayTable] = useState(true);
-
-    /* 
+    /*
     * tablepanel_dataset:
     * Contiene configuracion incial de labels y values utilizados para los drowpdownMenus en TablePanel
     * Puede incluir configuracion de estilos
@@ -58,34 +56,31 @@ export default function Employees() {
         }
     };
 
-    const fetchAllUsers = () => {
-        setLoading(true);
-        getAllUsers(searchTerm, routeParams)
-            .then(res => {
-                setUsers(res.results);
-                // si no se encontraron resultados mostrar NotFound
-                if (res.results.length === 0) {
-                    setDisplayTable(false);
-                } else {
-                    setDisplayTable(true);
-                }
-            })
-            .catch(err => console.error(err))
-            .finally(() => {
-                setLoading(false);
-            });
+    // idk
+    const sortTable = (usersDataset, criteria) => {
+        setExectOnOrder(false);
+        switch (criteria) {
+            case 'number':
+                return usersDataset.sort((a, b) => a.employeeNumber - b.employeeNumber)
+            case 'mostRecent':
+                return usersDataset.sort((a, b) => new Date(a.joinedAt) - new Date(b.joinedAt));
+            case 'older':
+                return usersDataset.sort((a, b) => new Date(b.joinedAt) - new Date(a.joinedAt));
+            case 'name':
+                return usersDataset.sort((a, b) => a.name.localeCompare(b.name));
+            case 'lastName':
+                return usersDataset.sort((a, b) => a.lastName?.localeCompare(b.lastName));
+            case 'email':
+                return usersDataset.sort((a, b) => a.email?.localeCompare(b.email));
+            default:
+                return usersDataset;
+        }
     }
 
-    // llamadas a API
-    useEffect(() => {
-        fetchAllUsers();
-    }, [routeParams]);
-
-    // persistencia de estados durante re-renderizado
-    useEffect(() => {
-        localStorage.setItem('selected_order', selectedOrder);
-        localStorage.setItem('selected_filter', selectedFilter);
-    }, [selectedOrder, selectedFilter]);
+    // reorganiza los usuarios segun el orden seleccionado
+    /* useEffect(() => {
+        setUsers(prev => sortTable(prev, selectedOrder));
+    }, [selectedOrder]); */
 
     return (
         <section>
@@ -96,10 +91,7 @@ export default function Employees() {
                         <span>1</span>
                     </div>
                     <div>
-                        <button onClick={() => {
-                            let testQuery = buildQuery(searchTerm, routeParams);
-                            console.log(testQuery);
-                        }}>IMPORTAR</button>
+                        <button onClick={() => console.log('IMPORTAR')}>IMPORTAR</button>
                         <button><i className="bi bi-plus-lg"></i> NUEVO EMPLEADO</button>
                     </div>
                 </div>
@@ -119,6 +111,8 @@ export default function Employees() {
                     setSearchTerm={setSearchTerm}
                     setRouteParams={setRouteParams}
                     routeParams={routeParams}
+                    addedFilters={addedFilters}
+                    setAddedFilters={setAddedFilters}
                 />
 
                 {displayTable ? (

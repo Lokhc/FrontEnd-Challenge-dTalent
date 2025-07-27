@@ -3,16 +3,15 @@ import { useState } from "react";
 export default function DropdownMenu({
     dataset,
     onSelect,
-    selected,
     title,
+    selected,
+    value,
     style,
     icon,
     menuStyle,
     menuItemStyle
 }) {
-
     const [showMenu, setShowMenu] = useState(false);
-    const [label, setLabel] = useState('');
 
     const handleClick = () => {
         setShowMenu(prevState => !prevState);
@@ -23,16 +22,14 @@ export default function DropdownMenu({
         setShowMenu(false);
     }
 
-    const DropDownMenuSetup = () => { }
-
     /**
      * dataset: ['Todos',  'Otro']
-     */
+    */
 
     return (
-        <div id="dropdown-menu" >
+        <div className="dropdown-menu" >
             <button onClick={handleClick} style={style} aria-haspopup>
-                {title || label}
+                {title} {selected}
                 {icon || <i className="bi bi-caret-down-fill"></i>}
             </button>
             {showMenu && dataset &&
@@ -40,10 +37,7 @@ export default function DropdownMenu({
                     {dataset.map(item => (
                         <li
                             key={item.value || item}
-                            onClick={() => {
-                                handleOnSelect(item.value || item);
-                                setLabel(item.label || item);
-                            }}
+                            onClick={() => handleOnSelect(item.value || item)}
                             role="option"
                             style={menuItemStyle}
                         >
