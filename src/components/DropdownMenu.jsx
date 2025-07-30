@@ -1,19 +1,21 @@
 import { useState } from "react";
 
 export default function DropdownMenu({
+    title,
     dataset,
     onSelect,
-    title,
     selected,
-    value,
-    style,
-    icon,
+    buttonStyle,
     menuStyle,
-    menuItemStyle
+    menuItemStyle,
+    icon,
+    itemIcon,
+    onRemove,
+    removeLabel,
 }) {
     const [showMenu, setShowMenu] = useState(false);
 
-    const handleClick = () => {
+    const handleShowMenu = () => {
         setShowMenu(prevState => !prevState);
     }
 
@@ -22,13 +24,14 @@ export default function DropdownMenu({
         setShowMenu(false);
     }
 
-    /**
-     * dataset: ['Todos',  'Otro']
-    */
+    const removeMenu = () => {
+        onRemove();
+        setShowMenu(false);
+    }
 
     return (
         <div className="dropdown-menu" >
-            <button onClick={handleClick} style={style} aria-haspopup>
+            <button onClick={handleShowMenu} style={buttonStyle} aria-haspopup>
                 {title} {selected}
                 {icon || <i className="bi bi-caret-down-fill"></i>}
             </button>
@@ -41,9 +44,10 @@ export default function DropdownMenu({
                             role="option"
                             style={menuItemStyle}
                         >
-                            {item.label || item}
+                            {item.label || item} {itemIcon}
                         </li>
                     ))}
+                    {removeLabel && <li onClick={removeMenu}>{removeLabel}</li>}
                 </ul>
             }
         </div>

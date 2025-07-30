@@ -374,6 +374,7 @@ border-right: 1px solid #033fa175;
 }
 
 .table-control-panel {
+  position: relative;
   margin-bottom: 2.5rem;
 }
 
