@@ -1,5 +1,3 @@
-import { useEffect, useState, useRef } from "react";
-
 import DropdownMenu from "./DropdownMenu"
 
 export default function TablePanel({
@@ -8,18 +6,33 @@ export default function TablePanel({
     setSelectedFilter, selectedFilter,
     setSelectedSubFilter, selectedSubFilter,
     setSearchTerm, searchTerm,
-    routeParams, setRouteParams,
-    setSearchResults, searchResults,
-    addedFilters, setAddedFilters
+    setRouteParams, routeParams,
+    // setSearchResults, searchResults,
+    addedFilters, setAddedFilters,
+    setDisplayTable,
 }) {
 
-    const [isLoading, setIsLoading] = useState(false);
+    const closeSearchMessage = () => {
+        setSearchTerm('');
+        setDisplayTable(true);
+    }
+
+    const handleInputSearchChange = (event) => {
+        event.preventDefault();
+        setSearchTerm(event.target.value);
+    }
+
+    const handleOrderOnSelect = (order) => {
+        setSelectedOrder(order);
+    }
 
     const handleFilterOnSelect = (filter) => {
         setSelectedFilter(filter);
         // si el filtro no fue seleccionado por el user, se procede a almacenar
         if (!addedFilters.some(obj => obj.value === filter)) {
             setAddedFilters(prev => [...prev, tablePanelDataset.filterSet.find(obj => obj.value === filter)]);
+            // pre-busquda usando valor por defecto de subfiltro: Todos
+            setRouteParams(prev => ({ ...prev, [filter]: 'Todos' }));
         }
     }
 
@@ -27,6 +40,8 @@ export default function TablePanel({
     const handleSubFilterOnSelect = (filter, selectedValue) => {
         setSelectedSubFilter(prev => ({ ...prev, [filter.label]: selectedValue }));
         setRouteParams(prev => ({ ...prev, [filter.value]: selectedValue }));
+
+        console.log(selectedSubFilter);
     }
 
     /*
@@ -35,11 +50,25 @@ export default function TablePanel({
         - setTimeOut: para evitar solicitudes innecesarias a medida que el usuario escribe los datos de entrada (debouncing)
         - AbortController: Permite abortar solicitudes, evitando que las busquedas obsoletas interfieran con la presentacion de los datos actuales
         - useRef: para persistir datos entre sesion de re-renderizado
-        - la funcion de limpieza de useEffect: para detener el consumo de memoria del timer
+        - la funcion de limpieza de useEffect: para detener el consumo de memoria del timer y abortar la ultima solicitud
     */
 
-    const handleInputSearchChange = (event) => {
-        setSearchTerm(event.target.value);
+    const handleRemoveFilter = (selected) => {
+        setSelectedFilter('');
+
+        setSelectedSubFilter(prev => {
+            const { [selected.label]: _, ...newSelectedSubFilters } = prev;
+            return newSelectedSubFilters;
+        });
+
+        // remover boton de la ui
+        setAddedFilters(prev => prev.filter(item => item.value != selected.value));
+
+        // remover filtro en params
+        setRouteParams(prev => {
+            const { [selected.value]: _, ...newRouteParams } = prev;
+            return newRouteParams;
+        });
     }
 
     /* useEffect(() => {
@@ -57,14 +86,17 @@ export default function TablePanel({
         abortControllerRef.current = new AbortController();
         const signal = abortControllerRef.current.signal;
 
-        // muestra estado de carga en la UI
-        setIsLoading(true);
-
         const debounceTimeout = setTimeout(() => {
-            getUsers(searchTerm, selectedSubFilter, signal)
-                .then(res => console.log(res))
+            getAllUsers(searchTerm, routeParams, signal)
+                .then(res => {
+                    setIsLoading(true);  // muestra estado de coincidencia en la UI
+                    console.log(res);
+                })
                 .catch(error => console.error('Error en TablePanel', error))
-                .finally(setIsLoading(false))
+                .finally(() => {
+                    setIsLoading(false);
+                    abortControllerRef.current = null;
+                })
         }, 500);
 
         return () => {
@@ -79,12 +111,12 @@ export default function TablePanel({
         <div className="table-control-panel">
             <div id="table-panel">
                 <div>
-                    <h3>Ordernar Por </h3>
+                    <h3>Ordernar por</h3>
                     <DropdownMenu
-                        dataset={tablePanelDataset.orderSet}
-                        onSelect={setSelectedOrder}
+                        dataset={tablePanelDataset.orderSet.order}
+                        onSelect={(selected) => handleOrderOnSelect(selected)}
                         selected={selectedOrder}
-                        value={selectedOrder}
+                        buttonStyle={tablePanelDataset.orderSet.style.button}
                     />
 
                     {/* <span>Agregar filtro +</span> */}
@@ -92,10 +124,11 @@ export default function TablePanel({
                     <DropdownMenu
                         dataset={tablePanelDataset.filterSet}
                         onSelect={handleFilterOnSelect}
-                        selected={selectedFilter}
-                        title="Agregar filtro:"
-                        icon=" +"
-                        style={commonStyles.filter_btn}
+                        title="Agregar filtro"
+                        icon={<i className="bi bi-plus-lg"></i>}
+                        itemIcon={<i className="bi bi-plus"></i>}
+                        buttonStyle={commonStyles.filter_btn}
+                        menuItemStyle={commonStyles.filter_item_btn_test}
                     />
                 </div>
                 <form>
@@ -104,11 +137,16 @@ export default function TablePanel({
                             type="text"
                             placeholder="Buscar empleados"
                             onChange={handleInputSearchChange}
+                            value={searchTerm}
                             aria-label="Buscar"
                         />
                         <i className="bi bi-search"></i>
                     </div>
-                    {isLoading && <span>buscando...</span>}
+                    {searchTerm &&
+                        <span>
+                            se muestran los resultados de la búsqueda: <b> {searchTerm}</b><i className="bi bi-x-lg" onClick={closeSearchMessage}></i>
+                        </span>
+                    }
                 </form>
             </div>
 
@@ -120,16 +158,12 @@ export default function TablePanel({
                         onSelect={(selectedValue) => handleSubFilterOnSelect(filter, selectedValue)}
                         title={filter.label + ':'}
                         selected={selectedSubFilter[filter.label]}
-                        value={selectedFilter[filter.value]}
-                        /*
-                        title={selectedSubFilter[filter.label]}
-                        selected={filter.label}
-                        value={selectedFilter[filter.value]}
-                        */
-                        style={commonStyles.dropdown_menu_btn}
+                        buttonStyle={commonStyles.dropdown_menu_btn}
                         menuStyle={commonStyles.menu}
                         menuItemStyle={commonStyles.menu_item}
                         icon={<i className="bi bi-chevron-down"></i>}
+                        removeLabel="Remover filtro"
+                        onRemove={() => handleRemoveFilter(filter)}
                     />
                 )}
             </div>
@@ -162,4 +196,10 @@ const commonStyles = {
         paddingLeft: '2rem',
         cursor: 'pointer',
     },
+
+    filter_item_btn_test: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    }
 }

@@ -65,6 +65,18 @@
   margin-bottom: 0.8rem;
 }
 
+#table-panel form span {
+  position: absolute;
+  right: 0;
+  top: 2.5rem;
+  font-size: 12px;
+}
+
+#table-panel form span i {
+  margin-left: 1rem;
+  cursor: pointer;
+}
+
 #input-box {
   display: flex;
   justify-content: center;
@@ -374,6 +386,7 @@ border-right: 1px solid #033fa175;
 }
 
 .table-control-panel {
+  position: relative;
   margin-bottom: 2.5rem;
 }
 

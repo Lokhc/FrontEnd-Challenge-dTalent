@@ -13,11 +13,22 @@ const modalStyle = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'black',
+        background: '#00000066',
+        height: '100 %',
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: '100 %',
     },
 
     modalContent: {
         width: '10rem',
         height: '5rem',
+        background: 'gray',
+        width: '10rem',
+        height: '5rem',
+        background: '#1d1e23',
+        borderRadius: '3px',
+        boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
     }
 }

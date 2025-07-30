@@ -16,7 +16,8 @@ export default function Employees() {
         users, setUsers,
         isLoading, setLoading,
         displayTable, setDisplayTable,
-        addedFilters, setAddedFilters
+        addedFilters, setAddedFilters,
+        searchResults, setSearchResults
     } = employee;
 
     /*
@@ -26,14 +27,14 @@ export default function Employees() {
     */
 
     const tablepanel_dataset = {
-        orderSet: [
-            { label: 'Número', value: 'number' },
-            { label: 'Más recientes', value: 'mostRecent' },
-            { label: 'Más antiguos', value: 'oldest' },
-            { label: 'Nombre', value: 'firstName' },
-            { label: 'Apellido', value: 'lastName' },
-            { label: 'Correo electrónico', value: 'email' },
-        ],
+        orderSet: {
+            order: ['Número', 'Más recientes', 'Más antiguos', 'Nombre', 'Apellido', 'Correo electrónico'],
+            style: {
+                button: {
+                    paddingLeft: '0.5rem'
+                }
+            },
+        },
 
         filterSet: [
             { label: 'Tipo de remuneración', value: 'paymentType' },
@@ -58,7 +59,6 @@ export default function Employees() {
 
     // idk
     const sortTable = (usersDataset, criteria) => {
-        setExectOnOrder(false);
         switch (criteria) {
             case 'number':
                 return usersDataset.sort((a, b) => a.employeeNumber - b.employeeNumber)
@@ -100,19 +100,16 @@ export default function Employees() {
 
                 {/* panel de control de la tabla */}
                 <TablePanel
-                    tablePanelDataset={tablepanel_dataset}
-                    setSelectedOrder={setSelectedOrder}
+                    tablePanelDataset={tablepanel_dataset} setSelectedOrder={setSelectedOrder}
                     selectedOrder={selectedOrder}
-                    setSelectedFilter={setSelectedFilter}
-                    selectedFilter={selectedFilter}
-                    setSelectedSubFilter={setSelectedSubFilters}
-                    selectedSubFilter={selectedSubFilters}
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    setRouteParams={setRouteParams}
-                    routeParams={routeParams}
-                    addedFilters={addedFilters}
-                    setAddedFilters={setAddedFilters}
+                    setSelectedFilter={setSelectedFilter} selectedFilter={selectedFilter}
+                    selectedSubFilter={selectedSubFilters} setSelectedSubFilter={setSelectedSubFilters}
+                    searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+                    routeParams={routeParams} setRouteParams={setRouteParams}
+                    addedFilters={addedFilters} setAddedFilters={setAddedFilters}
+                    setDisplayTable={setDisplayTable}
+                    searchResults={searchResults} setSearchResults={setSearchResults}
+                    setUsers={setUsers}
                 />
 
                 {displayTable ? (
