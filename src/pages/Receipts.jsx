@@ -20,11 +20,14 @@ export default function Receipts() {
     } = receipt;
 
     const tablepanel_dataset = {
-        orderSet: [
-            { label: 'Más recientes', value: 'mostRecent' },
-            { label: 'Más antiguos', value: 'oldest' },
-            { label: 'Tipo', value: 'type' },
-        ],
+        orderSet: {
+            order: ['Más recientes', 'Más antiguos', 'Tipo'],
+            style: {
+                button: {
+                    paddingLeft: '0.5rem'
+                }
+            },
+        },
 
         filterSet: [
             { label: 'Tipo de remuneración', value: 'paymentType' },
