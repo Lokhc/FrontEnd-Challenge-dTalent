@@ -1,0 +1,86 @@
+[33mcommit a1e1e994cfe20561030c025d1b9f87380f9be870[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Tue Jul 29 23:08:37 2025 -0400
+
+    [200~feat(búsqueda/filtro): Implementa funcionalidad de búsqueda, filtrado y eliminacion de filtro
+
+[33mcommit 11680f4b9a5eec5a4bab08fb471155633d734d32[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Sun Jul 27 13:14:18 2025 -0400
+
+    fix(auth): Mover declaración de token dentro de las funciones relevantes en api.js
+
+[33mcommit 302b03ddd7c758c2e92fab02badc8a188466c7cb[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Sat Jul 26 21:48:50 2025 -0400
+
+    feat(state) Implementar la gestion de estado global para vistas del DashboardLayout
+    Se han elevado los estados específicos de las vistas para garantizar la
+    persistencia en la navegación
+
+[33mcommit 8debeca12d03175465672addcb991c73d5cd9a57[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Fri Jul 25 10:37:37 2025 -0400
+
+    feat(config): Implementa variables de entorno
+
+[33mcommit 703dc3c088217acc1f016d3a4cb7bfb3e4256b7b[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Fri Jul 25 05:46:37 2025 -0400
+
+    fix: Corrige manejo de errores en Login y efectos visuales
+
+[33mcommit 74871b5beb76e5e932b37a8aa676949d9286583c[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Fri Jul 25 03:25:56 2025 -0400
+
+    fix: Corrige import de DropDownMenu
+
+[33mcommit 766c7be00a64d4551208bf3574578e71e9f87c3b[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Fri Jul 25 03:14:37 2025 -0400
+
+    feat: Implementa refactorización del objeto de filtros para construccion de query, componente NotFound en Employees y mejora parcial de filtros
+
+[33mcommit 9006f466d7b94134d2a66dce825f049672b8d9ea[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Thu Jul 24 18:20:08 2025 -0400
+
+    feat: Reestructura la aplicación y reescribe DropdownMenu en TablePanel
+
+[33mcommit 0cabe1d74ea576a161c172025379278d12bcbc23[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Thu Jul 24 00:34:26 2025 -0400
+
+    fix: Eliminar importaciones de imagenes inexistentes en App.jsx
+
+[33mcommit 3d0319abd66e814926437a2cf30bed56d359c2d1[m
+Merge: b7e9e6f dbc174b
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Wed Jul 23 23:42:24 2025 -0400
+
+    Merge branch 'main' of https://github.com/Lokhc/FrontEnd-Challenge-dTalent
+
+[33mcommit b7e9e6f64c789eb0189ec0e9a7957fd7850a4f20[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Wed Jul 23 23:13:43 2025 -0400
+
+    fix: Garantizar que react-router-dom sea una dependencia en package.json
+
+[33mcommit dbc174b236815ea38d3df0d311bfc3b70553b426[m
+Author: Isaxc <87088375+Lokhc@users.noreply.github.com>
+Date:   Wed Jul 23 21:17:28 2025 -0300
+
+    Update README.md
+
+[33mcommit 6c5f3e86177a5930c6ed02c075e01f2967e64a3f[m
+Author: Isaxc <87088375+Lokhc@users.noreply.github.com>
+Date:   Wed Jul 23 21:11:50 2025 -0300
+
+    Update README.md
+
+[33mcommit 6add52c1c800c8ac962294c206ff1273070764ec[m
+Author: lokhc <lucascolmantx@gmail.com>
+Date:   Wed Jul 23 17:44:42 2025 -0400
+
+    feat: Implementar funcionalidad principal de la web app
