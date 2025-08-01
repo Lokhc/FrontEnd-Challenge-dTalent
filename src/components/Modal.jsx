@@ -1,34 +1,34 @@
-export default function Modal() {
+import Spinner from "./Spinner";
+
+export default function Modal({ setShowModal, pdfURL, isModalContentLoading }) {
+
     return (
-        <section style={modalStyle.modalContainer}>
-            <div style={modalStyle.modalContent}>
-                <h3>Modal</h3>
-            </div>
+        <section className="modal-container">
+
+            {isModalContentLoading ? (
+                <div className="modal-loader">
+                    <Spinner />
+                    <h3>Cargando archivo</h3>
+                </div>
+            ) : (
+                <div className="modal-content">
+                    <iframe
+                        src={pdfURL}
+                        width="100%"
+                        height="500px"
+                    >
+                        Tu navegador no soporta iframes, pero puedes descargar el PDF.
+                    </iframe>
+
+                    <div className="modal-footer">
+                        <button onClick={() => setShowModal(false)}>CERRAR</button>
+                        <div>
+                            <a href=""><i className="bi bi-box-arrow-up-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </section>
     );
-}
-
-const modalStyle = {
-    modalContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: '#00000066',
-        height: '100 %',
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        width: '100 %',
-    },
-
-    modalContent: {
-        width: '10rem',
-        height: '5rem',
-        background: 'gray',
-        width: '10rem',
-        height: '5rem',
-        background: '#1d1e23',
-        borderRadius: '3px',
-        boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
-    }
 }

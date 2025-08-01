@@ -17,6 +17,9 @@ export default function Receipts() {
         isLoading, setLoading,
         displayTable, setDisplayTable,
         addedFilters, setAddedFilters,
+        setShowModal,
+        receiptFile, setReceiptFile,
+        isModalContentLoading, setModalContentLoading
     } = receipt;
 
     const tablepanel_dataset = {
@@ -48,8 +51,35 @@ export default function Receipts() {
         }
     };
 
-    const handleListItemClick = (listItemData) => {
-        console.log(listItemData);
+    const handleListItemClick = async (listItemData) => {
+        setShowModal(true);
+        const receiptID = listItemData.id;
+
+        setModalContentLoading(true);
+
+        try {
+            const response = await fetch(`https://api.schneck.dlab.software/api/receipts/${receiptID}/file`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Error al obtener archivo: ${errorData.detail || response.status}`);
+            }
+
+            setReceiptFile(data.file);
+
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setModalContentLoading(false);
+        }
     }
 
     return (
@@ -123,5 +153,35 @@ export default function Receipts() {
                 <Pagination />
             </div>
         </section>
+    );
+}
+
+const ModalContent = () => {
+    return (
+        <>
+            {isModalContentLoading ? (
+                <div className="modal-loader">
+                    <Spinner />
+                    <h3>Cargando archivo</h3>
+                </div>
+            ) : (
+                <div className="modal-content">
+                    <iframe
+                        src={pdfURL}
+                        width="100%"
+                        height="500px"
+                    >
+                        Tu navegador no soporta iframes, pero puedes descargar el PDF.
+                    </iframe>
+
+                    <div className="modal-footer">
+                        <button onClick={() => setShowModal(false)}>CERRAR</button>
+                        <div>
+                            <a href=""><i className="bi bi-box-arrow-up-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }

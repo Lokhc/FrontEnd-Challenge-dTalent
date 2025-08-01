@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 
 import { getAllUsers, getAllReceipts } from "../services/api";
 
+import Modal from "../components/Modal";
 import Sidebar from "../components/Sidebar";
 
 export default function DashboardLayout() {
@@ -105,6 +106,10 @@ export default function DashboardLayout() {
     const [isReceiptLoading, setReceiptLoading] = useState(false);
     const [displayReceiptTable, setDisplayReceiptTable] = useState(true);
 
+    const [showModal, setShowModal] = useState(false);
+    const [receiptFile, setReceiptFile] = useState(null);
+    const [isModalContentLoading, setModalContentLoading] = useState(false);
+
     const fetchAllReceipts = () => {
         setReceiptLoading(true);
         getAllReceipts(receiptSearchTerm, receiptRouteParams)
@@ -121,6 +126,12 @@ export default function DashboardLayout() {
 
     return (
         <>
+            {showModal &&
+                <Modal
+                    setShowModal={setShowModal}
+                    pdfURL={receiptFile}
+                    isModalContentLoading={isModalContentLoading}
+                />}
             <Sidebar />
             <Outlet context={{
                 employee: {
@@ -146,6 +157,9 @@ export default function DashboardLayout() {
                     isLoading: isReceiptLoading, setLoading: setReceiptLoading,
                     displayTable: displayReceiptTable, setDisplayTable: setDisplayReceiptTable,
                     addedFilters: receiptAddedFilters, setAddedFilters: setReceiptAddedFilters,
+                    setShowModal: setShowModal,
+                    receiptFile: receiptFile, setReceiptFile: setReceiptFile,
+                    isModalContentLoading: isModalContentLoading, setModalContentLoading: setModalContentLoading
                 }
             }} />
         </>
